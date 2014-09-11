@@ -1,0 +1,374 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<style type='text/css'>
+.clickbt {
+  position: relative;
+  height: 30pt;
+  width: 30pt;
+  top: -10px;
+  margin-right: 10px;
+}
+</style>
+<script type='text/javascript'>
+var sets = {
+  a: {
+    a:'あ',
+    i:'い',
+    u:'う',
+    e:'え',
+    o:'お'
+  },
+  ka: {
+    ka:'か',
+    ki:'き',
+    ku:'く',
+    ke:'け',
+    ko:'こ'
+  },
+  sa: {
+    sa:'さ',
+    shi:'し',
+    su:'す',
+    se:'せ',
+    so:'そ'
+  },
+  ga: {
+    ga:'が',
+    gi:'ぎ',
+    gu:'ぐ',
+    ge:'げ',
+    go:'ご'
+  },
+  za: {
+    za:'ざ',
+    ji:'じ',
+    zu:'ず',
+    ze:'ぜ',
+    zo:'ぞ'
+  },
+  ta: {
+    ta:'た',
+    chi:'ち',
+    tsu:'つ',
+    te:'て',
+    to:'と'
+  },
+  da: {
+    da:'だ',
+    '(ji)':'ぢ',
+    '(zu)':'づ',
+    de:'で',
+    'do':'ど'
+  },
+  na: {
+    na:'な',
+    ni:'に',
+    nu:'ぬ',
+    ne:'ね',
+    no:'の',
+    checked:1
+  },
+  ha: {
+    ha:'は',
+    hi:'ひ',
+    hu:'ふ',
+    he:'へ',
+    ho:'ほ',
+    checked:1
+  },
+  ba: {
+    ba:'ば',
+    bi:'び',
+    bu:'ぶ',
+    be:'べ',
+    bo:'ぼ',
+    checked:1
+  },
+  pa: {
+    pa:'ぱ',
+    pi:'ぴ',
+    pu:'ぷ',
+    pe:'ぺ',
+    po:'ぽ',
+    checked:1
+  },
+  ma: {
+    ma:'ま',
+    mi:'み',
+    mu:'む',
+    me:'め',
+    mo:'も'
+  },
+  ya: {
+    ya:'や',
+    yu:'ゆ',
+    yo:'よ'
+  },
+  ra: {
+    ra:'ら',
+    ri:'り',
+    ru:'る',
+    re:'れ',
+    ro:'ろ'
+  },
+  wa: {
+    wa:'わ',
+    wi:'ゐ',
+    we:'ゑ',
+    wo:'を'
+  }
+};
+//var hash = {
+//};
+var curset = {
+};
+var _notes = 1;
+var dolen = 2;
+var numwords = 6;
+var keys = [];
+var len;
+var totok = 0;
+var totbad = 0;
+var row = 0;
+function keyp( event ) {
+  if( !event ) { event = window.event; }
+  var code = document.all ? event.keyCode:event.charCode; 
+  var let = String.fromCharCode( code );
+  var num = let * 1;
+  if( num > 0 && num < 10 ) {
+    choose( num - 1 );
+  }
+}
+function setup() {
+  gencurset();
+  window.document.onkeypress = keyp;
+  var div = _getel('list');
+  for( var key in curset ) {
+    keys.push( key );
+    //_append( div, _newtext( key ) );
+    //_append( div, _newbr() );
+  }
+  len = keys.length;
+  _append( div, _newtext( len ) );
+  random(1);
+}
+var ans;
+function random(skip) {
+  if( !skip && _notes ) {
+    _notes = 0;
+    _clear( _getel('notes') );
+  }
+  _clear( _getel('list') );
+  var typ = Math.floor(Math.random()*2+1);
+  if( typ == 1 ) htop();
+  if( typ == 2 ) rtop();
+}
+function htop() {
+  var words = [];
+  var used = {};
+  for( var i=0;i<numwords;i++ ) {
+    var aword;
+    do { aword = ranword(); } while( used[ aword ] );
+    used[ aword ] = 1;
+    words[i] = aword;
+  }
+  ans = Math.floor(Math.random()*numwords+1)-1;
+  //_append( _getel('list'), _newtext(num) );
+  showh( -1, words[ ans ] );
+  for( var i=0;i<numwords;i++ ) {
+    show( i, words[ i ] );
+    //show( words[ i ] );
+  }
+}
+function rtop() {
+  var words = [];
+  var used = {};
+  for( var i=0;i<numwords;i++ ) {
+    var aword;
+    do { aword = ranword(); } while( used[ aword ] );
+    used[ aword ] = 1;
+    words[i] = aword;
+  }
+  ans = Math.floor(Math.random()*numwords+1)-1;
+  //_append( _getel('list'), _newtext(num) );
+  show( -1, words[ ans ] );
+  for( var i=0;i<numwords;i++ ) {
+    showh( i, words[ i ] );
+    //show( words[ i ] );
+  }
+}
+function show( i, a ) {
+  var l = _getel('list');
+  if( i!=-1 ) _append( l, newbt( i ) );
+  var span = _newel('span');
+  _append( l, span );
+  span.id = 'ans' + i;
+  for( var i=0;i<dolen;i++ ) {
+    var let = a[i];
+    _append( span, _newtext( let ) );
+  }
+  _append( l, _newbr() );
+}
+function showh( i, a ) {
+  var l = _getel('list');
+  if( i!=-1 ) _append( l, newbt( i ) );
+  var span = _newel('span');
+  _append( l, span );
+  span.id = 'ans' + i;
+  for( var i=0;i<dolen;i++ ) {
+    var let = a[i];
+    _append( span, _newtext( curset[let] ) );
+  }
+  _append( l, _newbr() );
+}
+function newbt( i ) {
+  var bt = document.createElement('input');
+  bt.type = 'button';
+  bt.onclick = choose.bind(0,i );
+  bt.value = i+1;
+  if( i!= -1 ) bt.className = 'clickbt';
+  return bt;
+}
+function choose( i ) {
+  if( i == ans ) {
+    random();
+    totok++;
+    row++;
+  }
+  else {
+    row=0;
+    totbad++;
+    var span = _getel('ans'+i);
+    span.style.color = 'red';
+    //alert('Wrong!');
+  }
+  showscore();
+}
+function showscore() {
+  _getel( 'totok' ).innerHTML = totok;
+  _getel( 'totbad' ).innerHTML = totbad;
+  _getel( 'row' ).innerHTML = row;
+}
+function ranword() {
+  var ra = [];
+  for( var i=0;i<dolen;i++ ) {
+    ra.push( ranr() );
+  }
+  
+  return ra;
+}
+function ranr() {
+  var num = Math.floor(Math.random()*len+1);
+  var key = keys[ num -1 ];
+  return key;
+}
+function ranlet() {
+  var r = ranr();
+  var let = curset[ r ];
+  return let;
+}
+function _newbr() {
+  return document.createElement('br');
+}
+function _newtr() {
+  return document.createElement('tr');
+}
+function _newtd() {
+  return document.createElement('td');
+}
+function _newel(t) {
+  return document.createElement(t);
+}
+function _getel( id ) {
+  return document.getElementById( id );
+}
+function _newtext( t ) {
+  return document.createTextNode( t );
+}
+function _append( el, sub ) {
+  el.appendChild( sub );
+}
+function _clear( el ) {
+  while( el.firstChild ) {
+    el.removeChild( el.firstChild );
+  }
+}
+Function.prototype.bind = function (ob) {
+  var func = this;
+  var arr = []; for(var i=1;i<arguments.length;i++) arr.push(arguments[i]);
+  return function() {
+    for(var i=0;i<arguments.length;i++) arr.push(arguments[i]);
+    return func.apply(ob,arr);
+  }
+}
+function maketable() {
+  var tr1 = _getel('tr1');
+  var tr2 = _getel('tr2');
+  for( var setname in sets ) {
+    var set = sets[ setname ];
+    var td1 = _newtd();
+    var td2 = _newtd();
+    _append( tr1, td1 );
+    _append( tr2, td2 );
+    _append( td1, _newtext( setname + '-gyo' ) );
+    var check = _newel('input');
+    
+    check.type = 'checkbox';
+    check.id = setname + '-gyo';
+    _append( td2, check );
+    if( set.checked ) check.checked = 1;
+  }
+}
+function gencurset() {
+  for( var setname in sets ) {
+    var set = sets[ setname ];
+    var check = _getel( setname + '-gyo' );
+    if( check.checked ) {
+      for( var rom in set ) {
+        if( rom == 'checked' ) continue;
+        var hir = set[ rom ];
+        curset[ rom ] = hir;
+      }
+    }
+  }
+}
+</script>
+</head>
+<body onload='maketable()'>
+
+<!--<input type='button' value='Go' onclick='random()'>-->
+
+<div id='list' style='font-size:40pt;'>
+  Hirahana Learning Tool<br>
+  <table cellspacing=0 cellpadding=5 border=1>
+    <tbody>
+
+      <tr id='tr1'>
+      </tr>
+      <tr id='tr2'>
+      </tr>
+    </tbody>
+  </table>
+  <input type='button' onclick='setup()' value='Begin'>
+</div>
+<span id='row'>0</span> in a row<br>
+
+<span id='totok'>0</span> correct<br>
+
+<span id='totbad'>0</span> wrong<br>
+
+<div id='notes'>
+<hr>
+Recent changes:
+<ul>
+<li>Buttons are now a bit nicer
+<li>Default checkmarks now appear in IE
+<li>Incorrect answers are now marked with red instead of annoying popup
+<li>Duplicate answers will no longer appear
+<li>Number keys can be used to answer the questions.
+<li>This page should work in IE, Firefox, or Chrome.
+</ul>
+
+</div>
+
+</body>
