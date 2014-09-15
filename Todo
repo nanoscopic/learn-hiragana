@@ -1,0 +1,14 @@
+- Add a katakana mode with all of the requisite symbols.
+- Ensure that each quiz has a different answer, because ocasionally the same answer will recur twice in a row
+- Show both the romaji and the kana of the last correct answer on the screen for a bit after answering correctly
+  ( but still move onto the next question )
+- Alter the program to be generated from a backend script, and to support symbol sets that use images instead of
+  font characters.
+- Find a beautiful hand drawn set of hiragana ( inked ), and use those instead of the lower quality font
+- Make it so that a configuration script allows a selection of various symbol sets by clicking a named group.
+  ( to make it easier to use the tool for teaching when students are supposed to learn certain symbols at a certain
+    time )
+- Add a way that the system can supported registration/login, so that it can be used to test people
+- Add timing, both so that you have to answer within a certain amount of time, and so that various stats can be
+  shown about how well you did.
+- Add a configurable option for the percentage of time kana is shown at the top versus romaji
